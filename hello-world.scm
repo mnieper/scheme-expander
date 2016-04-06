@@ -1,4 +1,5 @@
-(import (rapid primitive))
+(import (scheme base)
+	(scheme write))
 
 (display "Hello, World!")
 (newline)

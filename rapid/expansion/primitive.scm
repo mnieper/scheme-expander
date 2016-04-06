@@ -15,68 +15,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#;(define-environment primitive-environment
-
-  (define-special-form quote
-    (lambda (syntax)      
-      (and-let*
-	  ((form (unwrap-syntax syntax))
-	   ((or (= (length form) 2)
-		(compile-error "bad quote syntax" syntax)))
-	   (datum (list-ref form 1)))
-	(expand-into-expression	 
-	 (expression (quote ,(strip-syntactic-closures datum)) syntax)))))
-
-  (define-special-form if
-    (lambda (syntax)
-      (and-let*
-	  ((form (unwrap-syntax syntax))
-	   ((or (= (length form) 3) (= (length form) 4)
-		(compile-error "bad if syntax" syntax)))
-	   (test-syntax (list-ref form 1))
-	   (consequent-syntax (list-ref form 2))
-	   (alternate-syntax (and (= (length form) 4)
-				  (list-ref form 3))))
-	(expand-into-expression
-	 (expression (if ,(expand-expression test-syntax)
-			 ,(expand-expression consequent-syntax)
-			 ,(if alternate-syntax
-			      (expand-expression alternate-syntax)
-			      (expression |#<undef>|)))
-		     syntax)))))
-
-  (define-special-form case-lambda
-    (lambda (syntax)
-      (and-let*
-	  ((form (unwrap-syntax syntax))
-	   (clauses (cdr form)))
-	(expression (case-lambda
-		     ;; how does expression exactly work?
-		     ,@(map-in-order
-			(lambda (clause-syntax)
-			  (and-let*
-			      ((clause (unwrap-syntax clause-syntax))
-			       ((or (and (not (null? clause) (list? clause)))
-				    (compile-error "bad case-lambda clause"
-						   clause-syntax))))
-			    (with-scope
-			     (lambda ()
-			       (let ((parameters (expand-parameters! (car clause))))
-				 (make-clause parameters
-					      (list (expand-body (cdr clause) #f))
-					      clause-syntax))))))
-			clauses))
-		    syntax))))
-				
-  
-    
-  
-  (define-operator eq? 'eq?)
-  (define-operator string->number 'string->number)
-  (define-operator fixnum? 'fixnum?)
-  
-  )
-
 ;;; Utility functions
 
 (define (assert-identifier! syntax)
@@ -429,13 +367,61 @@
   (expand-into-record-type-definition
    name-syntax constructor-name-syntax field-name-syntax* pred-syntax field* syntax))
 
+(define (primitive-expander syntax)
+  (and-let*
+      ((form (syntax-datum syntax))
+       ((or (= (length form) 2)
+	    (compile-error "bad primitive syntax" syntax)))
+       (identifier-syntax (list-ref form 1))
+       (identifier (syntax->datum identifier-syntax unclose-form))
+       ((or (symbol? identifier)
+	    (compile-error "symbol expected" identifier-syntax)))
+       ((args (make-location ...))))
+       
+    
+    ;; TODO: Detect direct applications of this lambda-term
+    (expand-into-expression
+     (make-procedure
+      (list
+       (make-clause
+	
+	
+	...))
+      syntax))))
+
+
+
+     (make-primitive-operation operator (expand-expression* (cdr form)) syntax)
+
+     
+     (make-literal (syntax->datum (list-ref form 1) unclose-form) syntax)
+    
+   
+
+  (expand-into-expression
+   (make-procedure
+    (map-in-order
+     (lambda (clause-syntax)
+       (define form (syntax-datum clause-syntax))
+       (unless (and (not (null? form)) (list? form))
+	 (compile-error "bad case-lambda clause" clause-syntax))
+       (with-scope
+	(lambda ()
+	  (define parameters (expand-parameters! (car form)))
+	  (make-clause parameters
+		       (list (expand-body (cdr form) clause-syntax))
+		       clause-syntax))))
+     (cdr form))
+    syntax)))
+
+
 ;;; Primitive environment of (rapid primitive)
 
 (define primitive-environment
   (environment
    ;; Bindings
    ()
-
+   
    ;; Syntactic environment
 
    ;; Literal expressions
@@ -463,69 +449,6 @@
    (define-syntax define-syntax-expander)
    ;; Record-type definitions
    (define-record-type define-record-type-expander)
+   ;; Primitive operations
+   (primitive primitive-expander)))
 
-   ;; Equivalence predicates
-   (eq? (primitive operator-eq?))
-   ;; Numbers
-   (string->number (primitive operator-string->number))
-   (number->string (primitive operator-number->string))
-   (fixnum? (primitive operator-fixnum?))
-   (flonum? (primitive operator-flonum?))
-   (exact? (primitive operator-exact?))
-   (nan? (primitive operator-nan?))
-   (fx+ (primitive operator-fx+))
-   (fx- (primitive operator-fx-))
-   (fx= (primitive operator-fx=))
-   (fx< (primitive operator-fx<))
-   (fxnegative? (primitive operator-fxnegative?))
-   ;; TODO
-   ;; Symbols
-   (symbol? (primitive operator-symbol?))
-   (symbol->string (primitive operator-symbol->string))
-   ;; Booleans
-   (boolean? (primitive operator-boolean?))   
-   ;; Lists
-   (cons (primitive operator-cons))
-   (car (primitive operator-car))
-   (cdr (primitive operator-cdr))
-   (set-car! (primitive operator-set-car!))
-   (set-cdr! (primitive operator-set-cdr!))
-   (pair? (primitive operator-pair?))
-   (null? (primitive operator-null?))
-   ;; Characters
-   (char? (primitive operator-char?))
-   ;; Strings
-   (string? (primitive operator-string?))
-   (string->list (primitive operator-string->list))
-   (list->string (primitive operator-list->string))
-   ;; TODO
-   ;; Vectors
-   (make-vector (primitive operator-make-vector))
-   (vector-ref (primitive operator-vector-ref))
-   (vector-set! (primitive operator-vector-set!))
-   (vector? (primitive operator-vector?))
-   (vector-length (primitive operator-vector-length))
-   ;; Control features
-   (call-with-current-continuation (primitive operator-call-with-current-continuation))
-   (apply (primitive operator-apply))
-   (procedure? (primitive operator-procedure?))
-   ;; TODO
-   #; (call-with-values (primitive operator-call-with-values))
-   ;; Exceptions
-   (error (primitive operator-error))
-   (set-exception-handler! (primitive operator-set-exception-handler!))
-   ;; Input and output
-   (current-output-port (primitive operator-current-output-port))
-   (write-char (primitive operator-write-char))
-   ;; Process context
-   (exit (primitive operator-exit))
-   ;; Continuation marks
-   (ccm (primitive operator-ccm))
-   (wcm (primitive operator-wcm))
-   
-   ;; XXX
-   (+ (primitive operator+))
-   (display (primitive operator-display)) ;; FIXME: should go into (scheme base)
-   (newline (primitive operator-newline)) ;; FIXME: -- "" --
-   (string-append (primitive operator-string-append))
-   ))
