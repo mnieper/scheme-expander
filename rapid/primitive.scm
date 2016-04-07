@@ -28,62 +28,6 @@
 	 body2
 	 ...)))))
 
-;; Multiple assignment
-
-(define-syntax set-values!
-  (syntax-rules ()
-    ((set-values! formals expression)
-     (set-values!-aux formals () () expression))))
-
-(define-syntax set-values!-aux
-  (syntax-rules ()
-    ((set-values!-aux () new-formals ((var new) ...) expression)
-     (let-values ((new-formals expression))
-       (set! var new)
-       ...))
-    ((set-values!-aux (var . formals) (new-formal ...) (tmp ...) expression)
-     (set-values!-aux formals (new-formal ... new) (tmp ... (var new)) expression))
-    ((set-values!-aux var new-formals (tmp ...) expression)
-     (set-values!-aux () (new-formals . var) (tmp ... (var new)) expression))))
-
-;; Numbers
-
-(define (fixnum? obj)
-  (exact-integer? obj))
-
-(define (flonum? obj)
-  (and (real? obj) (inexact? obj)))
-
-(define (fx+ n1 n2)
-  (+ n1 n2))
-
-(define (fx- n1 n2)
-  (- n1 n2))
-
-(define (fx= n1 n2)
-  (= n1 n2))
-
-(define (fx< n1 n2)
-  (< n1 n2))
-
-(define (fxnegative? n)
-  (negative? n))
-
-;; Errors
-
-(define exception-handler #f)
-
-(define (set-exception-handler! new-handler)
-  (set! exception-handler new-handler))
-
-;; Note that the signature is different from scheme-object
-(define (error flag marks message irritant*)
-  (let ((error-object (vector message irritant* marks)))
-    (let ((cont (lambda arg* (apply scheme-error message irritant*))))
-      (when exception-handler
-	(exception-handler cont flag marks error-object))
-      (cont))))
-
 ;; Procedural records
 
 (define-record-type <rtd>

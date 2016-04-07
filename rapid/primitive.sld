@@ -17,81 +17,10 @@
 
 (define-library (rapid primitive)
   (export letrec*-values
-	  letrec
-	  let-values
-	  quote
-	  case-lambda
-	  if
-	  set!
-	  set-values!
-	  begin
-
-	  eq?
-
-	  fixnum?
-	  flonum?
-	  exact?
-	  nan?
-
-	  fx+
-	  fx-
-	  fx<
-	  fx=
-	  fxnegative?
-	  number->string
-	  string->number
-	  
-	  boolean?
-
-	  symbol?
-	  symbol->string
-	  
-	  char?
-	  
-	  string?
-	  string->list
-	  list->string
-	  
-	  make-vector
-	  vector-ref
-	  vector-set!
-	  vector?
-	  vector-length
-
-	  cons
-	  pair?
-	  car
-	  cdr
-	  set-car!
-	  set-cdr!
-	  null?
-	  
-	  error
-	  set-exception-handler!
-
-	  procedure?
-	  call-with-current-continuation
-	  apply
-
-	  current-output-port
-	  write-char
-	  
-	  exit
-
 	  make-rtd
 	  rtd-constructor
 	  rtd-predicate
 	  rtd-accessor
-	  rtd-mutator
-	  
-	  ;; XXX
-	  display newline
-	  +
-	  string-append)
-  (import (rename (scheme base) (error scheme-error))
-	  (scheme inexact)
-	  (scheme process-context)
-	  (scheme case-lambda)
-	  (scheme write) ;; XXX
-	  )
+	  rtd-mutator)
+  (import (scheme base))
   (include "primitive.scm"))

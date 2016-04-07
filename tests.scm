@@ -5,6 +5,11 @@
 	(rapid programs)
 	(rapid expressions))
 
+(define eval-environment
+  (environment '(rapid primitive)
+	       '(scheme base)
+	       '(scheme write)))
+
 (test-begin "Rapid Expander")
 
 (guard-compile
@@ -13,7 +18,7 @@
       (expression (program-expand program))
       (form (expression->datum expression))
       (result (parameterize ((current-output-port (open-output-string)))
-		(eval form (environment '(rapid primitive)))
+		(eval form eval-environment)
 		(get-output-string (current-output-port)))))
    (test-equal "A simple Hello World-program"
 	       "Hello, World!\n"
