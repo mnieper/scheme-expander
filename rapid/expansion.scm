@@ -15,18 +15,4 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (rapid expansion libraries)
-  (export read-library assert-library-name!)
-  (import (scheme base)
-	  (scheme file)
-	  (rapid and-let)
-	  (rapid lists)
-	  (rapid generators)
-	  (rapid format)
-	  (rapid error)
-	  (rapid expansion)
-	  (rapid expansion features)
-	  (rapid paths)
-	  (rapid syntax)
-	  (rapid read))
-  (include "libraries.scm"))
+(define current-search-paths (make-parameter '(".")))

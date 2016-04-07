@@ -126,35 +126,43 @@
 
 (define (read-library-definition library-name-syntax)
   (define library-name (syntax->datum library-name-syntax))
-  (define (locate-library)
+  (define (locate-library path)
     ;; TODO: error handling
-    ;; TODO: search several directories
-    (let loop ((filename "share") (library-name library-name))
+    (let loop ((filename path) (library-name library-name))
       (if (null? library-name)
 	  (string-append filename ".sld")
 	  (loop (path-join filename (symbol->string (car library-name)))
 		(cdr library-name)))))
-  (define source (locate-library))
-  (define read-syntax (read-file source #f library-name-syntax))
-  (let loop ()
-    (define syntax (read-syntax))
-    (when (eof-object? syntax)
-      (compile-error (format "library definition of ‘~a’ not found in file ‘~a’"
-			     library-name-syntax 
-			     source)
+  (let path-loop ((paths (current-search-paths)))
+    (when (null? paths)
+      (compile-error (format "library definition of ‘~a’ not found in search paths"
+			     library-name)
 		     library-name-syntax))
-    (let ((form (syntax-datum syntax)))
-      (cond
-       ((and (list? form)
-	     (>= (length form) 2)
-	     (eq? (syntax-datum (car form)) 'define-library))
-	(assert-library-name! (cadr form))
-	(if (equal? (syntax->datum (cadr form)) library-name)
-	    syntax
-	    (loop)))
-       (else
-	(loop))))))
-  
+    (or
+     (and-let*
+	 ((source (locate-library (car paths)))
+	  ((file-exists? source))
+	  (read-syntax (guard (condition
+			       ((file-error? condition) #f) ; XXX: Does not seem to work
+			       (else (raise condition)))
+			 (read-file source #f library-name-syntax))))
+       (let loop ()
+	 (define syntax (read-syntax))
+	 (and
+	  (not (eof-object? syntax))
+	  (let ((form (syntax-datum syntax)))
+	    (cond
+	     ((and (list? form)
+		   (>= (length form) 2)
+		   (eq? (syntax-datum (car form)) 'define-library))
+	      (assert-library-name! (cadr form))
+	      (if (equal? (syntax->datum (cadr form)) library-name)
+		  syntax
+		  (loop)))
+	     (else
+	      (loop)))))))
+     (path-loop (cdr paths)))))
+
 (define (read-file* string-syntax* ci?)
   (apply gappend (map-in-order
 		  (lambda (string-syntax)
