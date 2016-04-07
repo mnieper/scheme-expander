@@ -21,4 +21,10 @@
 	       "Hello, World!\n"
 	       result)))
 
+(test-begin "Meta Test")
+
+;; TODO
+
+(test-end "Meta Test")
+
 (test-end "Rapid Expander")
