@@ -100,9 +100,8 @@
 (define-primitive gcd 'gcd)
 (define-primitive get-output-bytevector 'get-output-bytevector)
 (define-primitive get-output-string 'get-output-string)
-(define-primitive of 'of)
-(define-primitive include 'include)
-(define-primitive include-ci 'include-ci)
+(define-primitive include 'include) ; FIXME: special form
+(define-primitive include-ci 'include-ci) ; FIXME: special form
 (define-primitive inexact 'inexact)
 (define-primitive inexact? 'inexact?)
 (define-primitive input-port-open? 'input-port-open?)
@@ -198,7 +197,6 @@
 (define-primitive symbol->string 'symbol->string)
 (define-primitive symbol=? 'symbol=?)
 (define-primitive symbol? 'symbol?)
-(define-primitive syntax-error 'syntax-error)
 (define-primitive textual-port? 'textual-port?)
 (define-primitive truncate 'truncate)
 (define-primitive truncate-quotient 'truncate-quotient)

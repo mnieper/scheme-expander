@@ -15,27 +15,35 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (scheme base)
-  (export *
+(define-library (rapid)
+  (export case-lambda
+	  if
+	  begin
+	  quote
+	  set!
+	  define-values
+	  letrec*-values
+	  make-rtd
+	  rtd-constructor
+	  rtd-predicate
+	  rtd-accessor
+	  rtd-mutator
+
+	  *
 	  +
 	  -
-	  ...
 	  /
 	  <
 	  <=
 	  =
-	  =>
 	  >
 	  >=
-	  _
 	  abs
-	  and
 	  append
 	  apply
 	  assoc
 	  assq
 	  assv
-	  begin
 	  binary-port?
 	  boolean=?
 	  boolean?
@@ -77,14 +85,9 @@
 	  current-error-port
 	  current-input-port
 	  current-output-port
-	  define
-	  define-record-type
-	  define-syntax
-	  define-values
 	  denominator
 	  do
 	  dynamic-wind
-	  else
 	  eof-object
 	  eof-object?
 	  eq?
@@ -111,27 +114,14 @@
 	  gcd
 	  get-output-bytevector
 	  get-output-string
-	  if
-	  guard
-	  include
-	  include-ci
 	  inexact
 	  inexact?
 	  input-port-open?
 	  input-port?
 	  integer->char
 	  integer?
-	  lambda
 	  lcm
 	  length
-	  let
-	  let*
-	  let*-values
-	  let-syntax
-	  let-values
-	  letrec
-	  letrec*
-	  letrec-syntax
 	  list
 	  list->string
 	  list->vector
@@ -164,18 +154,14 @@
 	  open-input-string
 	  open-output-bytevector
 	  open-output-string
-	  or
 	  output-port-open?
 	  output-port?
 	  pair?
-	  parameterize
 	  peek-char
 	  peek-u8
 	  port?
 	  positive?
 	  procedure?
-	  quasiquote
-	  quote
 	  quotient
 	  raise
 	  raise-continuable
@@ -192,7 +178,6 @@
 	  remainder
 	  reverse
 	  round
-	  set!
 	  set-car!
 	  set-cdr!
 	  square
@@ -225,17 +210,12 @@
 	  symbol->string
 	  symbol=?
 	  symbol?
-	  syntax-error
-	  syntax-rules
 	  textual-port?
 	  truncate
 	  truncate-quotient
 	  truncate-remainder
 	  truncate/
 	  u8-ready?
-	  unless
-	  unquote
-	  unquote-splicing
 	  utf8->string
 	  values
 	  vector
@@ -251,12 +231,123 @@
 	  vector-ref
 	  vector-set!
 	  vector?
-	  when
 	  with-exception-handler
 	  write-bytevector
 	  write-char
 	  write-string
 	  write-u8
-	  zero?)	  
-  (import (rapid primitive))
-  (include "base.scm"))
+	  zero?
+
+	  char-alphabetic?
+	  char-ci<=?
+	  char-ci<?
+	  char-ci=?
+	  char-ci>=?
+	  char-ci>?
+	  char-downcase
+	  char-foldcase
+	  char-lower-case?
+	  char-numeric?
+	  char-upcase
+	  char-upper-case?
+	  char-whitespace?
+	  digit-value
+	  string-ci<=?
+	  string-ci<?
+	  string-ci=?
+	  string-ci>=?
+	  string-ci>?
+	  string-downcase
+	  string-foldcase
+	  string-upcase
+
+	  caaar
+	  caadr
+	  cadar
+	  caddr
+	  cdaar
+	  cdadr
+	  cddar
+	  cdddr
+	  caaaar
+	  caaadr
+	  caadar
+	  caaddr
+	  cadaar
+	  cadadr
+	  caddar
+	  cadddr
+	  cdaaar
+	  cdaadr
+	  cdadar
+	  cdaddr
+	  cddaar
+	  cddadr
+	  cdddar
+	  cddddr
+
+	  environment
+	  eval
+
+	  call-with-input-file
+	  call-with-output-file
+	  delete-file
+	  file-exists?
+	  open-binary-input-file
+	  open-binary-output-file
+	  open-input-file
+	  open-output-file
+	  with-input-from-file
+	  with-output-to-file
+
+	  acos
+	  asin
+	  atan
+	  cos
+	  exp
+	  finite?
+	  infinite?
+	  log
+	  nan?
+	  sin
+	  sqrt
+	  tan
+	  
+	  load
+
+	  command-line
+	  emergency-exit
+	  exit
+	  get-environment-variable
+	  get-environment-variables
+
+	  read
+
+	  interaction-environment
+
+	  current-jiffy
+	  current-second
+	  jiffies-per-second
+
+	  display
+	  write
+	  write-shared
+	  write-simple
+
+	  null-environment
+	  scheme-report-environment)
+  (import (rapid primitive)
+	  (scheme base)
+	  (scheme char)
+	  (scheme complex)
+	  (scheme cxr)
+	  (scheme eval)
+	  (scheme file)
+	  (scheme inexact)
+	  (scheme load)
+	  (scheme process-context)
+	  (scheme read)
+	  (scheme repl)
+	  (scheme time)
+	  (scheme write)
+	  (scheme r5rs)))
