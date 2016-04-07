@@ -15,10 +15,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (scheme write)
-  (export display
-	  write
-	  write-shared
-	  write-simple)
-  (import (rapid primitive))
-  (include "write.scm"))
+(define-primitive current-jiffy 'current-jiffy)
+(define-primitive current-second 'current-second)
+(define-primitive jiffies-per-second 'jiffies-per-second)
+

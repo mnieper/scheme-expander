@@ -15,10 +15,30 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (scheme write)
-  (export display
-	  write
-	  write-shared
-	  write-simple)
+(define-library (scheme cxr)
+  (export caaar
+	  caadr
+	  cadar
+	  caddr
+	  cdaar
+	  cdadr
+	  cddar
+	  cdddr
+	  caaaar
+	  caaadr
+	  caadar
+	  caaddr
+	  cadaar
+	  cadadr
+	  caddar
+	  cadddr
+	  cdaaar
+	  cdaadr
+	  cdadar
+	  cdaddr
+	  cddaar
+	  cddadr
+	  cdddar
+	  cddddr)
   (import (rapid primitive))
-  (include "write.scm"))
+  (include "cxr.scm"))

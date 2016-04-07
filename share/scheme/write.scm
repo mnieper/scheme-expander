@@ -16,3 +16,6 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-primitive display 'display)
+(define-primitive write 'write)
+(define-primitive write-shared 'write-shared)
+(define-primitive write-simple 'write-simple)

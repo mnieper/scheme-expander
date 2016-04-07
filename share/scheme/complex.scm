@@ -15,10 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (scheme write)
-  (export display
-	  write
-	  write-shared
-	  write-simple)
-  (import (rapid primitive))
-  (include "write.scm"))
+(define-primitive angle 'angle)
+(define-primitive imag-part 'imag-part)
+(define-primitive magnitude 'magnitude)
+(define-primitive make-polar 'make-polar)
+(define-primitive make-rectangular 'make-rectangular)
+(define-primitive real-part 'real-part)

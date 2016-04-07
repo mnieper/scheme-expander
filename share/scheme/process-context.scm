@@ -15,10 +15,8 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (scheme write)
-  (export display
-	  write
-	  write-shared
-	  write-simple)
-  (import (rapid primitive))
-  (include "write.scm"))
+(define-primitive command-line 'command-line)
+(define-primitive emergency-exit 'emergency-exit)
+(define-primitive exit 'exit)
+(define-primitive get-environment-variable 'get-environment-variable)
+(define-primitive get-environment-variables 'get-environment-variables)

@@ -15,10 +15,5 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (scheme write)
-  (export display
-	  write
-	  write-shared
-	  write-simple)
-  (import (rapid primitive))
-  (include "write.scm"))
+(define-primitive null-environment 'null-environment)
+(define-primitive scheme-report-environment 'scheme-report-environment)

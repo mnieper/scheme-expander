@@ -15,10 +15,13 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (scheme write)
-  (export display
-	  write
-	  write-shared
-	  write-simple)
-  (import (rapid primitive))
-  (include "write.scm"))
+(define-primitive call-with-input-file 'call-with-input-file)
+(define-primitive call-with-output-file 'call-with-output-file)
+(define-primitive delete-file 'delete-file)
+(define-primitive file-exists? 'file-exists?)
+(define-primitive open-binary-input-file 'open-binary-input-file)
+(define-primitive open-binary-output-file 'open-binary-output-file)
+(define-primitive open-input-file 'open-input-file)
+(define-primitive open-output-file 'open-output-file)
+(define-primitive with-input-from-file 'with-input-from-file)
+(define-primitive with-output-to-file 'with-output-to-file)

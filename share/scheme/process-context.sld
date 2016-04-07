@@ -15,10 +15,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (scheme write)
-  (export display
-	  write
-	  write-shared
-	  write-simple)
+(define-library (scheme process-context)
+  (export command-line
+	  emergency-exit
+	  exit
+	  get-environment-variable
+	  get-environment-variables)
   (import (rapid primitive))
-  (include "write.scm"))
+  (include "process-context.scm"))

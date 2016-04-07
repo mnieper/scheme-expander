@@ -15,10 +15,15 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (scheme write)
-  (export display
-	  write
-	  write-shared
-	  write-simple)
-  (import (rapid primitive))
-  (include "write.scm"))
+(define-primitive acos 'acos)
+(define-primitive asin 'asin)
+(define-primitive atan 'atan)
+(define-primitive cos 'cos)
+(define-primitive exp 'exp)
+(define-primitive finite? 'finite?)
+(define-primitive infinite? 'infinite?)
+(define-primitive log 'log)
+(define-primitive nan? 'nan)
+(define-primitive sin 'sin)
+(define-primitive sqrt 'sqrt)
+(define-primitive tan 'tan)
