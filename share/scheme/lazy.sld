@@ -15,19 +15,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-library (rapid primitive)
-  (export case-lambda
-	  if
-	  begin
-	  quote
-	  set!
-	  define-values
-	  letrec*-values
-	  make-rtd
-	  rtd-constructor
-	  rtd-predicate
-	  rtd-accessor
-	  rtd-mutator)
-  (import (scheme base)
-	  (scheme case-lambda))
-  (include "primitive.scm"))
+(define-library (scheme lazy)
+  (export delay
+	  delay-force
+	  force
+	  make-promise
+	  promise?))
+

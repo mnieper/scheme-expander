@@ -90,7 +90,8 @@
 (define (make-primitive symbol syntax)
   (make-denotation 'primitive symbol syntax))
 (define (primitive? denotation)
-  (eq? (denotation-type denotation) 'primitive))
+  (and (denotation? denotation)
+       (eq? (denotation-type denotation) 'primitive)))
 (define (primitive-symbol primitive)
   (denotation-value primitive))
 
