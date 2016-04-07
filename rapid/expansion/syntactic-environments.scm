@@ -75,14 +75,24 @@
 
 ;;; Denotations
 
-;; At the moment, denotations are either syntactic closures or
+;; This is used for identifiers denoting a primitive procedure.
+;; At the moment, other denotations are either syntactic closures or
 ;; procedures. This is not extensible and the behaviour of eq?
 ;; on procedures may be implementation-dependent.
 
-(define-record-type denotation
-  (make-denotation syntax)
+(define-record-type <denotation>
+  (make-denotation type value syntax)
   denotation?
+  (type denotation-type)
+  (value denotation-value)
   (syntax denotation-syntax))
+
+(define (make-primitive symbol syntax)
+  (make-denotation 'primitive symbol syntax))
+(define (primitive? denotation)
+  (eq? (denotation-type denotation) 'primitive))
+(define (primitive-symbol primitive)
+  (denotation-value primitive))
 
 ;;; Syntactic bindings
 

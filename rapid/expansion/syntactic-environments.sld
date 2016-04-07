@@ -21,9 +21,11 @@
 	  with-syntactic-environment
 	  with-scope
 	  with-isolated-references
-	  make-denotation
 	  denotation?
 	  denotation-syntax
+	  make-primitive
+	  primitive?
+	  primitive-symbol
 	  lookup-binding!
 	  lookup-denotation!
 	  lookup-syntax!

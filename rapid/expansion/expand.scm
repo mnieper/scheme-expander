@@ -247,14 +247,19 @@
       (cond
        ((sc-lookup-denotation! form)
 	=> (lambda (denotation)
-	     (when (procedure? denotation)
+	     (cond
+	      ((primitive? denotation)
+	       (expand-into-expression (make-primitive-reference (primitive-symbol denotation)
+								 syntax)))
+	      ((procedure? denotation)
 	       ;; TODO: We want such a note whenever an identifier is mentioned
 	       (compile-note (format "identifier ‘~a’ was bound here" (unclose-form form))
 			     (sc-lookup-syntax! form))
 	       (compile-error (format "invalid use of syntax ‘~a’ as value"
 				      (unclose-form form))
 			      syntax))
-	     (expand-into-expression (make-reference denotation syntax))))
+	      (else
+	       (expand-into-expression (make-reference denotation syntax))))))
        (else
 	(compile-error (format "undefined variable ‘~a’" (unclose-form form)) syntax))))
      ((list? form)

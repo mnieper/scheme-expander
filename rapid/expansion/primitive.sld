@@ -20,6 +20,7 @@
   (import (scheme base)                  (scheme write) ;;; XXX
 	  (scheme write)
 	  (rename (scheme eval) (environment eval-environment))
+	  (rapid and-let)
 	  (rapid lists)
 	  (rapid tables)
 	  (rapid sets)

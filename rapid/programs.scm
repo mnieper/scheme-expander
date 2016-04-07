@@ -30,7 +30,7 @@
 	       ((list? form))
 	       ((>= (length form) 1))
 	       ((eq? (syntax-datum (car form)) 'import)))
-	    (return (loop (cdr syntax*) (append (cdr form) import-sets))))
+	    (loop (cdr syntax*) (append (reverse (cdr form)) import-sets)))
 	  (return syntax* (expand-import-sets (reverse import-sets))))))))
   (with-syntactic-environment
    (environment-syntactic-environment environment)

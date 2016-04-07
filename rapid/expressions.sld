@@ -18,6 +18,7 @@
 (define-library (rapid expressions)
   (export expression? expression-syntax                   
 	  make-reference reference? reference-location
+	  make-primitive-reference primitive-reference? primitive-reference-symbol
 	  make-literal literal? literal-value
 	  make-undefined undefined?
 	  make-procedure-call procedure-call?

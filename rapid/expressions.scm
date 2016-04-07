@@ -33,6 +33,15 @@
 (define (reference-location reference)
   (expression-value reference))
 
+;;; Primitive references
+
+(define (make-primitive-reference symbol syntax)
+  (make-expression 'primitive symbol syntax))
+(define (primitive-reference? expression)
+  (eq? (expression-type expression) 'primitive))
+(define (primitive-reference-symbol primitive-reference)
+  (expression-value primitive-reference))
+
 ;;; Literals
 
 (define (make-literal datum syntax)
@@ -297,9 +306,12 @@
 		       ,context))))
   (let loop ((expression expression))
     (cond
-       ;; References
+     ;; References
      ((reference? expression)
       (lookup-identifier! (reference-location expression)))
+     ;; Primitive reference
+     ((primitive-reference? expression)
+      (primitive-reference-symbol expression))
      ;; Literals
      ((literal? expression)
       (let ((value (literal-value expression)))

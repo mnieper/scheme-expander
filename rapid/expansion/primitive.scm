@@ -277,7 +277,7 @@
      (lambda ()
        (define ellipsis-environment (get-syntactic-environment))
        (when ellipsis-syntax
-	 (insert-binding! ellipsis-syntax (make-denotation ellipsis-syntax)))
+	 (insert-binding! ellipsis-syntax (make-primitive '... ellipsis-syntax)))
        (lambda (identifier1 identifier2)
 	 (identifier=? ellipsis-environment identifier1
 		       ellipsis-environment identifier2)))))
@@ -367,53 +367,25 @@
   (expand-into-record-type-definition
    name-syntax constructor-name-syntax field-name-syntax* pred-syntax field* syntax))
 
-(define (primitive-expander syntax)
+(define (define-primitive-expander syntax)
   (and-let*
       ((form (syntax-datum syntax))
-       ((or (= (length form) 2)
-	    (compile-error "bad primitive syntax" syntax)))
+       ((or (= (length form) 3)
+	    (compile-error "bad define-primitive syntax" syntax)))
        (identifier-syntax (list-ref form 1))
        (identifier (syntax->datum identifier-syntax unclose-form))
-       ((or (symbol? identifier)
-	    (compile-error "symbol expected" identifier-syntax)))
-       ((args (make-location ...))))
-       
-    
-    ;; TODO: Detect direct applications of this lambda-term
-    (expand-into-expression
-     (make-procedure
-      (list
-       (make-clause
-	
-	
-	...))
-      syntax))))
-
-
-
-     (make-primitive-operation operator (expand-expression* (cdr form)) syntax)
-
-     
-     (make-literal (syntax->datum (list-ref form 1) unclose-form) syntax)
-    
-   
-
-  (expand-into-expression
-   (make-procedure
-    (map-in-order
-     (lambda (clause-syntax)
-       (define form (syntax-datum clause-syntax))
-       (unless (and (not (null? form)) (list? form))
-	 (compile-error "bad case-lambda clause" clause-syntax))
-       (with-scope
-	(lambda ()
-	  (define parameters (expand-parameters! (car form)))
-	  (make-clause parameters
-		       (list (expand-body (cdr form) clause-syntax))
-		       clause-syntax))))
-     (cdr form))
-    syntax)))
-
+       ((or (identifier? identifier)
+	    (compile-error "identifier expected" identifier-syntax)))
+       (literal-syntax (list-ref form 2))
+       (literal (expand-expression literal-syntax))
+       ((or (literal? literal)
+	    (compile-error "literal expected" literal-syntax)))       
+       (symbol (literal-value literal))
+       ((or (symbol? symbol)
+	    (compile-error "symbol expected" literal-syntax))))
+    (expand-into-syntax-definition identifier-syntax
+				   (make-primitive symbol literal-syntax)
+				   syntax)))
 
 ;;; Primitive environment of (rapid primitive)
 
@@ -450,5 +422,4 @@
    ;; Record-type definitions
    (define-record-type define-record-type-expander)
    ;; Primitive operations
-   (primitive primitive-expander)))
-
+   (define-primitive define-primitive-expander)))
