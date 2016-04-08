@@ -6,7 +6,7 @@ Cloning
 This repository includes submodules. If you use the following clone command,
 it will automatically initialize and update each submodule in the repository.
 
-  $ git clone --recursive https://github.com/mnieper/rapid-expand.git
+  $ git clone --recursive https://github.com/mnieper/scheme-expander.git
 
 Run Tests
 ---------
@@ -14,7 +14,7 @@ Run Tests
 Assuming you have Chibi Scheme installed, you can run the tests by issuing
 the command
 
-  chibi-scheme -Irapid-lib -Irapid-read tests.scm
+  chibi-scheme -Ischeme-lib -Ischeme-reader tests.scm
 
 in the main directory. The test suite should work as well with any other
 R7RS-compliant implementation of the Scheme programming language although
