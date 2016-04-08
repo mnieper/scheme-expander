@@ -189,7 +189,10 @@
 ;;; Macro transformers
 (define *transformer-environment*
   (eval-environment '(scheme base)
-		    '(rapid lists)))
+		    '(rapid and-let)
+		    '(rapid lists)
+		    '(rapid tables)
+		    '(rapid comparators)))
 
 (define-syntax eval-transformer
   (syntax-rules ()
@@ -214,7 +217,8 @@
 		      compile-error compile-note
 		      syntax-datum derive-syntax
 		      datum->syntax
-		      syntax?))
+		      syntax?
+		      identifier?))
   (define transformer
    (lambda (syntax environment)
      (define renames (make-table (make-eq-comparator)))
@@ -225,7 +229,7 @@
 			(make-syntactic-closure macro-environment '() identifier))))
      (define (compare identifier1 identifier2)
        (identifier=? environment identifier1 environment identifier2))
-     (er-macro-transformer syntax rename compare)))
+     (datum->syntax (er-macro-transformer syntax rename compare) syntax)))
   (expand-into-transformer transformer syntax))
 
 (define (define-syntax-expander syntax)
