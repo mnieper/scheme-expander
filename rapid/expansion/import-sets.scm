@@ -34,12 +34,14 @@
 		      (environment-syntactic-environment initial-environment))
 	  table)))
     (thunk)))
-(define (lookup-synthetic-environment library-name)
+(define (lookup-syntactic-environment library-name)
   (table-ref/default (current-library-table) library-name #f))
 (define (insert-library! library-name)
   (table-set! (current-library-table) library-name #f))
 (define (library-loading? library-name)
   (not (table-ref/default (current-library-table) library-name #t)))
+(define (update-library! library-name syntactic-environment)
+  (table-set! (current-library-table) library-name syntactic-environment))
 
 (define (expand-import-sets import-sets)
   (with-initial-environment
@@ -131,7 +133,7 @@
 (define (import-library! library-name-syntax)
   (define library-name (syntax->datum library-name-syntax))
   (cond
-   ((lookup-synthetic-environment library-name))
+   ((lookup-syntactic-environment library-name))
    (else
     (when (library-loading? library-name)
       (compile-error "library references itself while loading" library-name-syntax))
@@ -161,8 +163,10 @@
 		     (else
 		      (assert-identifier! export-spec)
 		      (insert-binding-from! export-spec syntactic-environment))))
-	       export-specs)
-		 (get-syntactic-environment))))))))))))
+		  export-specs)
+		 (let ((syntactic-environment (get-syntactic-environment)))
+		   (update-library! library-name syntactic-environment)
+		   syntactic-environment))))))))))))
    
 (define (assert-identifier! identifier-syntax)
   (unless (symbol? (syntax-datum identifier-syntax))

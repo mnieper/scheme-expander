@@ -131,6 +131,7 @@
     (let loop ((filename path) (library-name library-name))
       (if (null? library-name)
 	  (string-append filename ".sld")
+	  ;; TODO: Handle numerics instead of symbols in library-name
 	  (loop (path-join filename (symbol->string (car library-name)))
 		(cdr library-name)))))
   (let path-loop ((paths (current-search-paths)))
