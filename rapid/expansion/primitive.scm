@@ -320,58 +320,6 @@
 				   macro-environment))
   (expand-into-transformer transformer transformer-syntax))
 
-(define (define-record-type-expander syntax)
-  (define field-name-set (make-table (make-eq-comparator)))
-  (define (assert-unique-field-name! field-name-syntax)
-    (assert-identifier! field-name-syntax)
-    (table-update!
-     field-name-set
-     (syntax-datum field-name-syntax)
-     (lambda (syntax) syntax)
-     (lambda () field-name-syntax)
-     (lambda (syntax)
-       (compile-note "previous appearance was here" syntax)
-       (compile-error "duplicate field name" field-name-syntax))))
-  (define form
-    (let ((datum (syntax-datum syntax)))
-      (unless (>= (length datum) 4)
-	(compile-error "bad define-record-type syntax" syntax))
-      datum))
-  (define name-syntax
-    (let ((syntax (list-ref form 1)))
-      (assert-identifier! syntax)
-      syntax))
-  (define-values (constructor-name-syntax field-name-syntax*)
-    (let* ((syntax (list-ref form 2))
-	   (form (syntax-datum syntax)))
-      (unless (and (not (null? form)) (list? form))
-	(compile-error "bad contructor" syntax))
-      (for-each assert-identifier! form)
-      (for-each assert-unique-field-name! form)
-      (set! field-name-set (make-table (make-eq-comparator)))
-      (values (car form) (cdr form))))
-  (define pred-syntax
-    (let ((syntax (list-ref form 3)))
-      (assert-identifier! syntax)
-      syntax))
-  (define field*
-    (map-in-order
-     (lambda (field-syntax)
-       (let* ((form (syntax-datum field-syntax)))
-	 (unless (and (list? form) (<= 2 (length form) 3))
-	   (compile-error "bad field" syntax))
-	 (for-each assert-identifier! form)
-	 (assert-unique-field-name! (car form))
-	 form))
-     (list-tail form 4)))
-  (for-each
-   (lambda (field-name-syntax)
-     (unless (table-ref/default field-name-set (syntax-datum field-name-syntax) #f)
-       (compile-error "not a field name" field-name-syntax)))
-   field-name-syntax*)
-  (expand-into-record-type-definition
-   name-syntax constructor-name-syntax field-name-syntax* pred-syntax field* syntax))
-
 (define (define-primitive-expander syntax)
   (and-let*
       ((form (syntax-datum syntax))
@@ -424,7 +372,5 @@
    (define-values define-values-expander)
    ;; Syntax definitions
    (define-syntax define-syntax-expander)
-   ;; Record-type definitions (XXX: implemented in base.scm)
-   ;; XXX: (define-record-type define-record-type-expander)
-   ;; Primitive operations
+   ;; Primitives
    (define-primitive define-primitive-expander)))
