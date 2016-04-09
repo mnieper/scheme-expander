@@ -424,7 +424,7 @@
    (define-values define-values-expander)
    ;; Syntax definitions
    (define-syntax define-syntax-expander)
-   ;; Record-type definitions
-   (define-record-type define-record-type-expander)
+   ;; Record-type definitions (XXX: implemented in base.scm)
+   ;; XXX: (define-record-type define-record-type-expander)
    ;; Primitive operations
    (define-primitive define-primitive-expander)))
