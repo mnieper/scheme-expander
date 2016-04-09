@@ -210,7 +210,7 @@
       datum))
   ;; XXX: eval may raise... should be propagated to compile-error
   ;; or internal error
-  ;; Do we need compile-error, compile-not or can we simply use error?
+  ;; Do we need compile-error, compile-note or can we simply use error?
   (define macro-environment (get-syntactic-environment))
   (define er-macro-transformer
     (eval-transformer (syntax->datum (cadr form) unclose-form)
@@ -218,7 +218,8 @@
 		      syntax-datum derive-syntax
 		      datum->syntax
 		      syntax?
-		      identifier?))
+		      identifier?
+		      make-synthetic-identifier))
   (define transformer
    (lambda (syntax environment)
      (define renames (make-table (make-eq-comparator)))
