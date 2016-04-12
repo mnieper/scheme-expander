@@ -29,9 +29,9 @@
 	  make-primitive
 	  primitive?
 	  primitive-symbol
-	  make-transformer
-	  transformer?
-	  transformer-procedure
+	  make-special-form
+	  special-form?
+	  special-form-expander
 	  
 	  lookup-binding!
 	  lookup-denotation!

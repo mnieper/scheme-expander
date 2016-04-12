@@ -101,13 +101,13 @@
 (define (primitive-symbol primitive)
   (denotation-value primitive))
 
-(define (make-transformer procedure . syntax*)
-  (apply %make-denotation 'transformer procedure syntax*))
-(define (transformer? denotation)
+(define (make-special-form expander . syntax*)
+  (apply %make-denotation 'special-form expander syntax*))
+(define (special-form? denotation)
   (and (denotation? denotation)
-       (eq? (denotation-type denotation) 'transformer)))
-(define (transformer-procedure transformer)
-  (denotation-value transformer))
+       (eq? (denotation-type denotation) 'special-form)))
+(define (special-form-expander special-form)
+  (denotation-value special-form))
 
 ;;; Syntactic bindings
 

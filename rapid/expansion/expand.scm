@@ -165,7 +165,7 @@
 	      ((primitive? denotation)
 	       (expand-into-expression (make-primitive-reference (primitive-symbol denotation)
 								 syntax)))
-	      ((or (transformer? denotation) (procedure? denotation))
+	      ((or (special-form? denotation) (procedure? denotation))
 	       ;; TODO: We want such a note whenever an identifier is mentioned
 	       (compile-note (format "identifier ‘~a’ was bound here" (unclose-form form))
 			     (sc-lookup-syntax! form))
@@ -197,7 +197,7 @@
    (identifier? form)
    (let ((denotation (sc-lookup-denotation! form)))
      (or (and (procedure? denotation) denotation)
-	 (and (transformer? denotation) (transformer-procedure denotation))))))
+	 (and (special-form? denotation) (special-form-expander denotation))))))
 
 ;;; Utility procedures
 

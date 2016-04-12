@@ -70,7 +70,7 @@
     location))
 
 (define (make-auxiliary-syntax identifier)
-  (make-transformer  
+  (make-special-form  
    (lambda (syntax)
      (compile-error "invalid use of auxiliary syntax" syntax))
    #f))
@@ -186,22 +186,6 @@
   (expand-into-expression
    (make-literal (syntax->datum (list-ref form 1) unclose-form) syntax)))
 
-;;; Macro transformers
-(define *transformer-environment*
-  (eval-environment '(scheme base)
-		    '(rapid and-let)
-		    '(rapid lists)
-		    '(rapid tables)
-		    '(rapid comparators)))
-
-(define-syntax eval-transformer
-  (syntax-rules ()
-    ((eval-transformer transformer identifier ...)
-     ((eval `(lambda (identifier ...)
-	       ,transformer)
-	    *transformer-environment*)
-      identifier ...))))
-
 (define (define-syntax-expander syntax)
   (define form
     (let ((datum (syntax-datum syntax)))
@@ -222,7 +206,6 @@
 
 (define ellipsis-expander (make-auxiliary-syntax '...))
 (define underscore-expander (make-auxiliary-syntax '_))
-
 (define (syntax-rules-expander transformer-syntax)
   (define-values (ellipsis-syntax literal-syntax* syntax-rule-syntax*)
     (let ((transformer (syntax-datum transformer-syntax)))
