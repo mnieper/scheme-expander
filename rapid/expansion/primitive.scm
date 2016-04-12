@@ -70,9 +70,10 @@
     location))
 
 (define (make-auxiliary-syntax identifier)
-  (lambda (syntax)
-    identifier ;; XXX: make each auxiliary syntax its own denotation
-    (compile-error "invalid use of auxiliary syntax" syntax)))
+  (make-transformer  
+   (lambda (syntax)
+     (compile-error "invalid use of auxiliary syntax" syntax))
+   #f))
 
 (define (primitive operator)
   (lambda (syntax)

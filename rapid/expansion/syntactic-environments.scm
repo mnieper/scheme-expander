@@ -81,19 +81,33 @@
 ;; on procedures may be implementation-dependent.
 
 (define-record-type <denotation>
-  (make-denotation type value syntax)
+  (%make-denotation type value syntax)
   denotation?
   (type denotation-type)
   (value denotation-value)
   (syntax denotation-syntax))
 
-(define (make-primitive symbol syntax)
-  (make-denotation 'primitive symbol syntax))
+(define make-denotation
+  (case-lambda
+   (() (%make-denotation #f #f #f))
+   ((type value) (%make-denotation type value #f))
+   ((type value syntax) (%make-denotation type value syntax))))
+
+(define (make-primitive symbol . syntax*)
+  (apply %make-denotation 'primitive symbol syntax*))
 (define (primitive? denotation)
   (and (denotation? denotation)
        (eq? (denotation-type denotation) 'primitive)))
 (define (primitive-symbol primitive)
   (denotation-value primitive))
+
+(define (make-transformer procedure . syntax*)
+  (apply %make-denotation 'transformer procedure syntax*))
+(define (transformer? denotation)
+  (and (denotation? denotation)
+       (eq? (denotation-type denotation) 'transformer)))
+(define (transformer-procedure transformer)
+  (denotation-value transformer))
 
 ;;; Syntactic bindings
 
