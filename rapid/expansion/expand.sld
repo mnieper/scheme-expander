@@ -35,6 +35,5 @@
 	  (rapid syntax)
           (rapid expressions)
 	  (rapid expansion syntactic-closures)
-	  (rapid expansion syntactic-environments)
-	  (rapid expansion primitive-operators))
+	  (rapid expansion syntactic-environments))
   (include "expand.scm"))

@@ -33,6 +33,5 @@
 	  (rapid expansion macro-transformers)
 	  (rapid expansion syntactic-closures)
 	  (rapid expansion syntactic-environments)
-	  (rapid expressions)
-	  (rapid expansion primitive-operators))
+	  (rapid expressions))
   (include "primitive.scm"))
