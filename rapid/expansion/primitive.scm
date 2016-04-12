@@ -257,14 +257,6 @@
 (define (syntax-rules-expander transformer-syntax)
   (define-values (ellipsis-syntax literal-syntax* syntax-rule-syntax*)
     (let ((transformer (syntax-datum transformer-syntax)))
-
-      ;; XXX: We can drop the following two checks
-      (unless (and (not (null? transformer)) (list? transformer))
-	(compile-error "bad transformer spec" transformer-syntax))
-      (unless (eq? (sc-lookup-denotation! (syntax-datum (car transformer)))
-		   syntax-rules-expander)
-	(compile-error "unknown transformer spec" transformer-syntax))
-      
       (cond
        ((and (>= (length transformer) 2)
 	     (list? (syntax-datum (list-ref transformer 1))))
