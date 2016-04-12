@@ -71,9 +71,8 @@
 
 (define (make-auxiliary-syntax identifier)
   (lambda (syntax)
-    (compile-error (format "invalid use of auxiliary syntax ‘~a’"
-			   identifier)
-		   syntax)))
+    identifier ;; XXX: make each auxiliary syntax its own denotation
+    (compile-error "invalid use of auxiliary syntax" syntax)))
 
 (define (primitive operator)
   (lambda (syntax)
