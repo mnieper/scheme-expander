@@ -420,6 +420,6 @@
    ;; Syntax definitions
    (define-syntax define-syntax-expander)
    ;; Record-type definitions
-   (define-record-type define-record-type-expander)
+   ;(define-record-type define-record-type-expander)
    ;; Primitive operations
    (define-primitive define-primitive-expander)))

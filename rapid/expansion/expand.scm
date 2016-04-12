@@ -240,7 +240,7 @@
   (let loop ((form (syntax-datum syntax)))
     (cond
      ((simple-datum? form)
-      (expand-into-expression (make-literal form syntax)))
+      (expand-into-expression (make-literal (syntax->datum syntax) syntax)))
      ((null? form)
       (compile-error "empty application in source" syntax))
      ((identifier? form)
