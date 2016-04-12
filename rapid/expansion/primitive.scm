@@ -189,7 +189,10 @@
 ;;; Macro transformers
 (define *transformer-environment*
   (eval-environment '(scheme base)
-		    '(rapid lists)))
+		    '(rapid and-let)
+		    '(rapid lists)
+		    '(rapid tables)
+		    '(rapid comparators)))
 
 (define-syntax eval-transformer
   (syntax-rules ()
@@ -207,14 +210,16 @@
       datum))
   ;; XXX: eval may raise... should be propagated to compile-error
   ;; or internal error
-  ;; Do we need compile-error, compile-not or can we simply use error?
+  ;; Do we need compile-error, compile-note or can we simply use error?
   (define macro-environment (get-syntactic-environment))
   (define er-macro-transformer
     (eval-transformer (syntax->datum (cadr form) unclose-form)
 		      compile-error compile-note
 		      syntax-datum derive-syntax
 		      datum->syntax
-		      syntax?))
+		      syntax?
+		      identifier?
+		      make-synthetic-identifier))
   (define transformer
    (lambda (syntax environment)
      (define renames (make-table (make-eq-comparator)))
@@ -225,7 +230,7 @@
 			(make-syntactic-closure macro-environment '() identifier))))
      (define (compare identifier1 identifier2)
        (identifier=? environment identifier1 environment identifier2))
-     (er-macro-transformer syntax rename compare)))
+     (datum->syntax (er-macro-transformer syntax rename compare) syntax)))
   (expand-into-transformer transformer syntax))
 
 (define (define-syntax-expander syntax)
@@ -252,11 +257,14 @@
 (define (syntax-rules-expander transformer-syntax)
   (define-values (ellipsis-syntax literal-syntax* syntax-rule-syntax*)
     (let ((transformer (syntax-datum transformer-syntax)))
+
+      ;; XXX: We can drop the following two checks
       (unless (and (not (null? transformer)) (list? transformer))
 	(compile-error "bad transformer spec" transformer-syntax))
       (unless (eq? (sc-lookup-denotation! (syntax-datum (car transformer)))
 		   syntax-rules-expander)
 	(compile-error "unknown transformer spec" transformer-syntax))
+      
       (cond
        ((and (>= (length transformer) 2)
 	     (list? (syntax-datum (list-ref transformer 1))))
@@ -315,58 +323,6 @@
 				   macro-environment))
   (expand-into-transformer transformer transformer-syntax))
 
-(define (define-record-type-expander syntax)
-  (define field-name-set (make-table (make-eq-comparator)))
-  (define (assert-unique-field-name! field-name-syntax)
-    (assert-identifier! field-name-syntax)
-    (table-update!
-     field-name-set
-     (syntax-datum field-name-syntax)
-     (lambda (syntax) syntax)
-     (lambda () field-name-syntax)
-     (lambda (syntax)
-       (compile-note "previous appearance was here" syntax)
-       (compile-error "duplicate field name" field-name-syntax))))
-  (define form
-    (let ((datum (syntax-datum syntax)))
-      (unless (>= (length datum) 4)
-	(compile-error "bad define-record-type syntax" syntax))
-      datum))
-  (define name-syntax
-    (let ((syntax (list-ref form 1)))
-      (assert-identifier! syntax)
-      syntax))
-  (define-values (constructor-name-syntax field-name-syntax*)
-    (let* ((syntax (list-ref form 2))
-	   (form (syntax-datum syntax)))
-      (unless (and (not (null? form)) (list? form))
-	(compile-error "bad contructor" syntax))
-      (for-each assert-identifier! form)
-      (for-each assert-unique-field-name! form)
-      (set! field-name-set (make-table (make-eq-comparator)))
-      (values (car form) (cdr form))))
-  (define pred-syntax
-    (let ((syntax (list-ref form 3)))
-      (assert-identifier! syntax)
-      syntax))
-  (define field*
-    (map-in-order
-     (lambda (field-syntax)
-       (let* ((form (syntax-datum field-syntax)))
-	 (unless (and (list? form) (<= 2 (length form) 3))
-	   (compile-error "bad field" syntax))
-	 (for-each assert-identifier! form)
-	 (assert-unique-field-name! (car form))
-	 form))
-     (list-tail form 4)))
-  (for-each
-   (lambda (field-name-syntax)
-     (unless (table-ref/default field-name-set (syntax-datum field-name-syntax) #f)
-       (compile-error "not a field name" field-name-syntax)))
-   field-name-syntax*)
-  (expand-into-record-type-definition
-   name-syntax constructor-name-syntax field-name-syntax* pred-syntax field* syntax))
-
 (define (define-primitive-expander syntax)
   (and-let*
       ((form (syntax-datum syntax))
@@ -419,7 +375,5 @@
    (define-values define-values-expander)
    ;; Syntax definitions
    (define-syntax define-syntax-expander)
-   ;; Record-type definitions
-   ;(define-record-type define-record-type-expander)
-   ;; Primitive operations
+   ;; Primitives
    (define-primitive define-primitive-expander)))

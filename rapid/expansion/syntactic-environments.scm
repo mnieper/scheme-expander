@@ -170,7 +170,8 @@
 	 (unless (eq? (binding-denotation binding) denotation)
 	   (compile-note "initial binding was here"
 			 (syntactic-binding-syntax binding))
-	   (compile-error "identifier rebound with different denotation"
+	   (compile-error (format "identifier ‘~a’ rebound with different denotation"
+				  (syntax-datum identifier-syntax))
 			  identifier-syntax))))
    (else
     (insert-binding! identifier-syntax denotation))))
